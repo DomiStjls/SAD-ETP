@@ -10,7 +10,7 @@ class Item(SqlAlchemyBase, SerializerMixin, UserMixin):
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String, nullable=False)
-    text = sqlalchemy.Column(sqlalchemy.Text, nullable=False)
+    description = sqlalchemy.Column(sqlalchemy.Text, nullable=False)
     category = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     photo = sqlalchemy.Column(sqlalchemy.String)
     price = sqlalchemy.Column(sqlalchemy.Integer, nullable=False)
