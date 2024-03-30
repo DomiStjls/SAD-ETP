@@ -8,7 +8,7 @@ from data.item import Item
 
 try:
     # linux (glitch)
-    os.system(':> db/shop.db')
+    # os.system(':> db/shop.db')
     # windows
     # os.system('type nul > db/shop.db')
 
