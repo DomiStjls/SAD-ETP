@@ -2,4 +2,16 @@
 
 {% block content %}
     <h1>Главная страница</h1>
+    {% for item in data%}
+<div class="col-md6 border rounded">
+    <h2>{{item.name}}</h2>
+    <div>
+        {{item.photo}}
+        {{item.description}}
+    </div>
+    <div>
+        Категория - {{item.category}}, Цена - {{item.price}}
+    </div>
+</div>
+{% endfor %}
 {% endblock %}
