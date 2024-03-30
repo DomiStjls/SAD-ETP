@@ -1,17 +1,30 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Главная страница</h1>
+<h1>Главная страница</h1>
+<div class="cards">
     {% for item in data%}
-<div class="col-md6 border rounded">
-    <h2>{{item.name}}</h2>
-    <div>
-        {{item.photo}}
-        {{item.description}}
-    </div>
-    <div>
-        Категория - {{item.category}}, Цена - {{item.price}}
-    </div>
+    <div style="display: grid;grid-template-columns: repeat(auto-fill, 225px);width: 100%;max-width: 1000px; justify-content: center; justify-items: center; column-gap: 30px;  row-gap: 40px; margin: 0 auto;">
+
+        <div class="card">
+          <div class="card__top">
+            <a class="card__image">
+              {{  item.photo  }}
+          </a>
+          <div class="card__label">-10%</div>
+      </div>
+      <div class="card__bottom">
+        <div class="card__prices">
+          <div class="card__price card__price--discount">{{item.price}}</div>
+          <div class="card__price card__price--common">{{item.price * 1.1 // 1}}</div>
+      </div>
+      <a href="#" class="card__title">
+          {{item.name}}
+      </a>
+      <button class="card__add">В корзину</button>
+  </div>
+</div>
 </div>
 {% endfor %}
+</div>
 {% endblock %}
