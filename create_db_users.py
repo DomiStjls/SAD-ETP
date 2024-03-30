@@ -7,6 +7,9 @@ from data.user import User
 from data.item import Item
 
 try:
+    # linux (glitch)
+    os.system(':> db/shop.db')
+    # windows
     # os.system('type nul > db/shop.db')
 
     db_session.global_init("db/shop.db")
