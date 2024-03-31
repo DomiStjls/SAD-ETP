@@ -11,18 +11,28 @@ try:
 
     db_session.global_init("db/shop.db")
     db_sess = db_session.create_session()
-    with open("prices.csv", encoding='utf-8') as f:
+    items = db_sess.query(Item).all()
+    if items:
+        for el in items:
+            db_sess.delete(el)
+        db_sess.commit()
+    with open("prices.csv", encoding="utf-8") as f:
         r = f.readlines()[1:]
-        for i in range(16):
+        for i in range(24):
             s = r[i].split(";")
             category = s[0]
-            name = s[5]
+            name = s[5].split('[')[0]
             description = s[9]
-            photo = s[12]
-            price = int(s[7].split(',')[0])
-            item = Item(name=name,category=category,description=description,photo=photo,price=price)
+            photo = s[12].split("'")[1]
+            price = int(s[7].split(",")[0])
+            item = Item(
+                name=name,
+                category=category,
+                description=description,
+                photo=photo,
+                price=price,
+            )
             db_sess.add(item)
-
 
     db_sess.commit()
 
