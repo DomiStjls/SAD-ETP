@@ -1,9 +1,10 @@
 from flask import *
 from flask_login import *
+
 from data import db_session
+from data.item import Item
 from data.loginform import LoginForm
 from data.user import User
-from data.item import Item
 
 DEBUG = True
 
@@ -43,16 +44,29 @@ def logout():
 
 @app.route("/")
 def main():
-
     db_sess = db_session.create_session()
     data = db_sess.query(Item).all()
     print(data)
-    return render_template("index.html",data=data)
+    return render_template("index.html", data=data)
 
 
 @app.route("/about")
 def about():
     return render_template("about.html")
+
+
+@app.route("/item/<id>")
+def item(id):
+    name = "q"
+    description = "w"
+    category = "e"
+    price = 52
+    return render_template("item.html", title=name, name=name, description=description, category=category, price=price)
+
+
+@app.route("/cart")
+def cart():
+    return render_template("cart.html")
 
 
 def main():
