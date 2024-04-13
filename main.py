@@ -57,16 +57,23 @@ def about():
 
 @app.route("/item/<id>")
 def item(id):
-    name = "q"
-    description = "w"
-    category = "e"
-    price = 52
-    return render_template("item.html", title=name, name=name, description=description, category=category, price=price)
+    product = {
+        "name": "q",
+        "description": "w",
+        "category": "e",
+        "price": 52,
+    }
+    return render_template("item.html", title=name, product=product)
 
 
 @app.route("/cart")
 def cart():
-    return render_template("cart.html")
+    products = [
+        {"name": "q", "category": "w", "price": 52},
+        {"name": "q", "category": "w", "price": 52},
+        {"name": "q", "category": "w", "price": 52},
+    ]
+    return render_template("cart.html", products=products, total=sum(map(lambda x: x["price"], products)))
 
 
 def main():
