@@ -18,13 +18,14 @@ try:
         db_sess.commit()
     with open("prices.csv", encoding="utf-8") as f:
         r = f.readlines()[1:]
-        for i in range(24):
+        for i in range(49):
             s = r[i].split(";")
             category = s[0]
-            name = s[5].split('[')[0]
+            name = s[5].split("[")[0]
             description = s[9]
-            photo = s[12].split("'")[1]
+            photo = s[11].split("'")[1]
             price = int(s[7].split(",")[0])
+            maker = s[10]
             item = Item(
                 name=name,
                 category=category,
