@@ -57,13 +57,19 @@ def about():
 
 @app.route("/item/<id>")
 def item(id):
-    product = {
-        "name": "q",
-        "description": "w",
-        "category": "e",
-        "price": 52,
-    }
-    return render_template("item.html", title=name, product=product)
+    try:
+        db_sess = db_session.create_session()
+        q = db_sess.query(Item).filter(Item.id == id).first()
+        product = {
+            "id": q.id,
+            "name": q.name,
+            "description": q.description,
+            "category": q.category,
+            "price": q.price,
+        }
+        return render_template("item.html", title=product["name"], product=product)
+    except Exception as e:
+        return make_response(jsonify({'error': 'Bad request'}), 400)
 
 
 @app.route("/cart")
@@ -74,6 +80,24 @@ def cart():
         {"name": "q", "category": "w", "price": 52},
     ]
     return render_template("cart.html", products=products, total=sum(map(lambda x: x["price"], products)))
+
+
+@app.route("/addcart/<id>", methods=["GET", "POST"])
+def addcart(id):
+    def code(dic):
+        return ";".join([f"{k}:{v}" for k, v in dic.items()])
+
+    def decode(s):
+        s = [tuple(i.split(':')) for i in list(s.split(";"))]
+        d = {}
+        for i in s:
+            d[i[0]] = int(i[1])
+        return d
+
+    try:
+        print(request.form.number)
+    except Exception as e:
+        return make_response(jsonify({'error': 'Bad request'}), 400)
 
 
 def main():

@@ -1,9 +1,4 @@
-# тут будет код который загрузит информацию из prices.xlsx в базу данных
-
-import os
-
 from data import db_session
-from data.user import User
 from data.item import Item
 
 try:
@@ -11,28 +6,22 @@ try:
 
     db_session.global_init("db/shop.db")
     db_sess = db_session.create_session()
-    items = db_sess.query(Item).all()
-    if items:
-        for el in items:
-            db_sess.delete(el)
-        db_sess.commit()
-    with open("prices.csv", encoding="utf-8") as f:
-        r = f.readlines()[1:]
-        for i in range(24):
-            s = r[i].split(";")
-            category = s[0]
-            name = s[5].split('[')[0]
-            description = s[9]
-            photo = s[12].split("'")[1]
-            price = int(s[7].split(",")[0])
-            item = Item(
-                name=name,
-                category=category,
-                description=description,
-                photo=photo,
-                price=price,
-            )
-            db_sess.add(item)
+    items = [
+        (1, "q1", "w1", "e1", "photo1", 521),
+        (2, "q2", "w2", "e2", "photo2", 522),
+        (3, "q3", "w3", "e3", "photo3", 523),
+        (4, "q4", "w4", "e4", "photo4", 524),
+        (5, "q5", "w5", "e5", "photo5", 525),
+    ]
+    for (id, category, name, description, photo, price) in items:
+        item = Item(
+            name=name,
+            category=category,
+            description=description,
+            photo=photo,
+            price=price,
+        )
+        db_sess.add(item)
 
     db_sess.commit()
 

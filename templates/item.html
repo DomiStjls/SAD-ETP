@@ -16,15 +16,17 @@
             <h3 class="my-4">${{ product["price"] }}</h3>
             <p class="mb-4">{{ product["description"] }}
             </p>
-            <div class="d-flex gap-3 mb-4">
+            <form class="d-flex gap-3 mb-4" action="/addcart/{{ product['id'] }}" method="GET">
                 <input
                         type="number"
                         class="form-control"
                         value="1"
                         style="max-width: 80px"
+                        id="number"
+                        name="number"
                 />
-                <button class="btn btn-primary" type="button">В корзину</button>
-            </div>
+                <button class="btn btn-primary" type="submit">В корзину</button>
+            </form>
         </div>
     </div>
 </div>
