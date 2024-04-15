@@ -28,7 +28,7 @@ def login():
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            return redirect("/")
+            return redirect(session['url'])
         return render_template('login.html',
                                message="Неправильный логин или пароль",
                                form=form)
@@ -39,13 +39,14 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect("/")
+    return redirect(session['url'])
 
 
 @app.route("/")
 def main():
     db_sess = db_session.create_session()
     data = db_sess.query(Item).all()
+    session['url'] = "/"
     print(data)
     return render_template("index.html", data=data)
 
@@ -58,6 +59,7 @@ def about():
 @app.route("/item/<id>")
 def item(id):
     try:
+        session['url'] = f"/item/{id}"
         db_sess = db_session.create_session()
         q = db_sess.query(Item).filter(Item.id == id).first()
         product = {
@@ -67,7 +69,13 @@ def item(id):
             "category": q.category,
             "price": q.price,
         }
-        return render_template("item.html", title=product["name"], product=product)
+        if current_user.is_authenticated:
+            user = db_sess.query(User).filter(User.id == current_user.id).first()
+            cart = [i.split(':')[0] for i in user.cart.split(';')]
+            print(cart)
+        else:
+            cart = []
+        return render_template("item.html", title=product["name"], product=product, cart=(id in cart))
     except Exception as e:
         return make_response(jsonify({'error': 'Bad request'}), 400)
 
@@ -82,20 +90,27 @@ def cart():
     return render_template("cart.html", products=products, total=sum(map(lambda x: x["price"], products)))
 
 
-@app.route("/addcart/<id>", methods=["GET", "POST"])
+@app.route("/addcart/<id>", methods=["GET"])
 def addcart(id):
-    def code(dic):
-        return ";".join([f"{k}:{v}" for k, v in dic.items()])
-
-    def decode(s):
-        s = [tuple(i.split(':')) for i in list(s.split(";"))]
-        d = {}
-        for i in s:
-            d[i[0]] = int(i[1])
-        return d
+    # def code(dic):
+    #     return ";".join([f"{k}:{v}" for k, v in dic.items()])
+    #
+    # def decode(s):
+    #     s = [tuple(i.split(':')) for i in list(s.split(";"))]
+    #     d = {}
+    #     for i in s:
+    #         d[i[0]] = int(i[1])
+    #     return d
 
     try:
-        print(request.form.number)
+        n = int(request.args.get('number'))
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).filter(User.id == current_user.id).first()
+        s = user.cart
+        s += f";{id}:{n}"
+        user.cart = s
+        db_sess.commit()
+        return redirect(f'/item/{id}')
     except Exception as e:
         return make_response(jsonify({'error': 'Bad request'}), 400)
 
