@@ -12,7 +12,7 @@
                             {% for product in products %}
                             <div class="d-flex align-items-center mb-5">
                                 <div class="flex-shrink-0">
-                                    <img src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/13.webp"
+                                    <img src="{{ product['photo'] }}"
                                          class="img-fluid" style="width: 150px;"
                                          alt="Generic placeholder image">
                                 </div>
@@ -23,13 +23,9 @@
                                     <div class="d-flex align-items-center">
                                         <p class="fw-bold mb-0 me-5 pe-3">{{ product["price"] }}$</p>
                                         <div class="def-number-input number-input safari_only">
-                                            <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()"
-                                                    class="minus"></button>
                                             <input class="quantity fw-bold text-black" min="0" name="quantity"
-                                                   value="1"
+                                                   value="{{ product['number'] }}"
                                                    type="number">
-                                            <button onclick="this.parentNode.querySelector('input[type=number]').stepUp()"
-                                                    class="plus"></button>
                                         </div>
                                     </div>
                                 </div>
@@ -49,7 +45,7 @@
                                     <input type="text" id="typeName" class="form-control form-control-lg"
                                            siez="17"
                                            placeholder="улица Пушкина, дом Колотушкина"/>
-                                    <label class="form-label" for="typeName">Адресс</label>
+                                    <label class="form-label" for="typeName">Адрес</label>
                                 </div>
                                 <div data-mdb-input-init class="form-outline mb-5">
                                     <input type="text" id="typeName" class="form-control form-control-lg"
@@ -60,7 +56,7 @@
                                 <p class="mb-5">Lorem ipsum dolor sit amet consectetur, adipisicing elit <a
                                         href="#!">obcaecati sapiente</a>.</p>
                                 <button type="button" data-mdb-button-init data-mdb-ripple-init
-                                        class="btn btn-primary btn-block btn-lg">Order
+                                        class="btn btn-primary btn-block btn-lg">Заказать
                                 </button>
                                 <h5 class="fw-bold mb-5" style="position: absolute; bottom: 0;">
                                     <a href="/"><i class="fas fa-angle-left me-2"></i>На главную</a>

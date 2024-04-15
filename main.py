@@ -82,11 +82,16 @@ def item(id):
 
 @app.route("/cart")
 def cart():
-    products = [
-        {"name": "q", "category": "w", "price": 52},
-        {"name": "q", "category": "w", "price": 52},
-        {"name": "q", "category": "w", "price": 52},
-    ]
+    session['url'] = "/cart"
+    if not current_user.is_authenticated:
+        return redirect('/login')
+    db_sess = db_session.create_session()
+    q = db_sess.query(User).filter(User.id == current_user.id).first()
+    products = []
+    for id, n in [tuple(i.split(":")) for i in q.cart.split(';')]:
+        n = int(n)
+        w = db_sess.query(Item).filter(Item.id == id).first()
+        products.append({"name": w.name, "number": n, "category": w.category, "price": w.price, "photo": w.photo})
     return render_template("cart.html", products=products, total=sum(map(lambda x: x["price"], products)))
 
 
@@ -108,6 +113,8 @@ def addcart(id):
         user = db_sess.query(User).filter(User.id == current_user.id).first()
         s = user.cart
         s += f";{id}:{n}"
+        if s[0] == ";":
+            s = s[1:]
         user.cart = s
         db_sess.commit()
         return redirect(f'/item/{id}')
