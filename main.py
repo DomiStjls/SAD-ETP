@@ -47,7 +47,6 @@ def main():
     db_sess = db_session.create_session()
     data = db_sess.query(Item).all()
     session["url"] = "/"
-    print(data)
     return render_template("index.html", data=data)
 
 
@@ -69,6 +68,7 @@ def item(id):
             "category": q.category,
             "price": q.price,
             "photo": q.photo,
+            'maker': q.maker,
         }
         if current_user.is_authenticated:
             user = db_sess.query(User).filter(User.id == current_user.id).first()
@@ -82,6 +82,27 @@ def item(id):
     except Exception as e:
         return make_response(jsonify({"error": "Bad request"}), 400)
 
+@app.route('/search', methods=["GET"])
+def search():
+    try:
+        session["url"] = "/search"
+        category = request.args.get("category")
+        if category == 'Comp':
+            category = 'Компьютерная техника'
+        elif category == 'Mobil':
+            category = 'Мобильные и связь'
+        else:
+            category = ''
+        name = request.args.get("name")
+        maker = request.args.get("maker")
+        # print(category, name, maker)
+        db_sess = db_session.create_session()
+        q = db_sess.query(Item).filter(Item.category == category).all()
+        data = [el for el in q if name in el.name and maker in el.maker]
+        return render_template('search.html', data=data, total=len(data))
+    except Exception as e:
+        print(e)
+        return redirect('/')
 
 @app.route("/cart")
 def cart():
@@ -130,7 +151,7 @@ def addcart(id):
             s = s[1:]
         user.cart = s
         db_sess.commit()
-        return redirect(f"/item/{id}")
+        return redirect(f"/item/{id}") if request.referrer.split('/')[-2] == 'item' else redirect("/")
     except Exception as e:
         print(e)
         return make_response(jsonify({"error": "Bad request"}), 400)

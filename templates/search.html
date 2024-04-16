@@ -1,34 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Главная страница</h1>
-<form class="d-flex gap-3 mb-4" action="/search" method="GET">
-    <p class="mb-4">Введите категорию</p>
-    <select style="max-width: 300px" class="form-select form-select-lg mb-3" aria-label="Large select example" name='category'>
-      <option selected>Выберите категорию</option>
-      <option value="Comp">Компьютерная техника</option>
-      <option value="Mobil">Мобильные и связь</option>
-  </select>
-  <p class="mb-4">Введите название</p>
-  <input
-  type="text"
-  class="form-control"
-  value=""
-  style="max-width: 100px"
-  id="name"
-  name="name"
-  />
-  <p class="mb-4">Введите производителя</p>
-  <input
-  type="text"
-  class="form-control"
-  value=""
-  style="max-width: 100px"
-  id="maker"
-  name="maker"
-  />
-  <button class="btn btn-primary" type="submit">Искать</button>
-</form>
+<h1>Найденные записи: {{ total }}</h1>
+
 <style>
     p {
       margin: 10 auto;

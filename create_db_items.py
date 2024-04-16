@@ -21,16 +21,18 @@ try:
         for i in range(49):
             s = r[i].split(";")
             category = s[0]
-            name = s[5].split('[')[0]
+            name = s[5].split("[")[0]
             description = s[9]
-            photo = s[12].split("'")[1]
+            photo = s[11].split("'")[1]
             price = int(s[7].split(",")[0])
+            maker = s[10]
             item = Item(
                 name=name,
                 category=category,
                 description=description,
                 photo=photo,
                 price=price,
+                maker=maker,
             )
             db_sess.add(item)
 

@@ -14,3 +14,4 @@ class Item(SqlAlchemyBase, SerializerMixin, UserMixin):
     category = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     photo = sqlalchemy.Column(sqlalchemy.String)
     price = sqlalchemy.Column(sqlalchemy.Integer, nullable=False)
+    maker = sqlalchemy.Column(sqlalchemy.String)
