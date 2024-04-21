@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-6">
+            <img
+                    src="{{ product['photo'] }}"
+                    class="img-fluid"
+                    alt="Product Image"
+            />
+        </div>
+        <div class="col-lg-6">
+            <h2 class="fw-bold">{{ product["name"] }}</h2>
+            <p class="text-muted">{{ product["category"] }}</p>
+            <p class="mb-4">Производитель: {{ product["maker"] }}</p>
+            <h3 class="my-4">${{ product["price"] }}</h3>
+            <p class="mb-4">{{ product["description"] }}</p>
+            <form class="d-flex gap-3 mb-4" action="/addcart/{{ product['id'] }}" method="GET">
+                {% if current_user.is_authenticated %}
+                {% if cart == True %}
+                <a class="btn btn-success" href="/cart">Товар уже в корзине</a>
+                {% else %}
+                <input
+                        type="number"
+                        class="form-control"
+                        value="1"
+                        style="max-width: 80px"
+                        id="number"
+                        name="number"
+                />
+                <button class="btn btn-primary" type="submit">В корзину</button>
+                {% endif %}
+                {% else %}
+                <p class="mb-4">Сначала нужно <a href="/login">войти</a></p>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
