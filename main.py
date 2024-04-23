@@ -4,6 +4,7 @@ from flask_login import *
 from data import db_session
 from data.item import Item
 from data.loginform import LoginForm
+from data.order import Order
 from data.user import User
 
 DEBUG = True
@@ -40,15 +41,15 @@ def login():
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
-            login_user(user, remember=form.remember_me.data) 
-        # переход на главную старницу
+            login_user(user, remember=form.remember_me.data)
+            # переход на главную старницу
             return redirect(session["url"])
         # неудачный вход
         return render_template(
             "login.html", message="Неправильный логин или пароль", form=form
-        ) 
-    # авторизация
-    return render_template("login.html", title="Авторизация", form=form) 
+        )
+        # авторизация
+    return render_template("login.html", title="Авторизация", form=form)
 
 
 @app.route("/logout")
@@ -111,21 +112,22 @@ def item(id):
             user = db_sess.query(User).filter(User.id == current_user.id).first()
             cart = [i.split(":")[0] for i in user.cart.split(";")]
 
-             
+
         else:
             cart = []
-            
+
         # если пользователь авторизован на сайте, мы ищем его корзину
         # далее проверяем, есть ли товар, который он собирается посмотреть в корзине
         # если есть, то на странице с товаром будет написано, что товар уже в корзине
         # если нет, то на странице с товаром будет написано, что товар можно добавить в корзину
         # это сделано через передачу параметра (id in cart)
-        
+
         return render_template(
             "item.html", title=product["name"], product=product, cart=(id in cart)
         )
     except Exception:
         return make_response(jsonify({"error": "Bad request"}), 400)
+
 
 @app.route('/search', methods=["GET"])
 def search():
@@ -157,6 +159,7 @@ def search():
         # в случае ошибки пользователь просто останется на главной странице
         return redirect('/')
 
+
 @app.route("/cart")
 def cart():
     """корзина пользователя
@@ -174,11 +177,12 @@ def cart():
     q = db_sess.query(User).filter(User.id == current_user.id).first()
     products = []
     # считываем все товары из корзины, чтобы показать их
-    for id, n in [tuple(i.split(":")) for i in q.cart.split(";")]:
+    for id, n in ([tuple(i.split(":")) for i in q.cart.split(";")] if q.cart else []):
         n = int(n)
         w = db_sess.query(Item).filter(Item.id == id).first()
         products.append(
             {
+                "id": w.id,
                 "name": w.name,
                 "number": n,
                 "category": w.category,
@@ -226,6 +230,37 @@ def addcart(id):
     except Exception as e:
         print(e)
         return make_response(jsonify({"error": "Bad request"}), 400)
+
+
+@app.route('/order', methods=['POST'])
+def order():
+    try:
+        if not current_user.is_authenticated:
+            return make_response(jsonify({"error": "Bad request"}), 400)
+        db_sess = db_session.create_session()
+        data = dict(request.form)
+        address = data.get("address", None)
+        phone = data.get("phone", None)
+        if not address or not phone:
+            raise ValueError
+        del data['address']
+        del data['phone']
+        s = ""
+        for key, value in data.items():
+            id = int(key[7:])
+            n = int(value)
+            s += f"{id}:{n};"
+        s = s[:-1]
+        order = Order(client=current_user.id, order=s, address=address, phone=phone)
+        db_sess.add(order)
+        db_sess.commit()
+        q = db_sess.query(User).filter(User.id == current_user.id).first()
+        q.cart = ""
+        db_sess.commit()
+        return render_template('order.html', success=True)
+    except Exception as e:
+        return render_template('order.html', success=False)
+
 
 
 def main():

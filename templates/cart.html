@@ -4,7 +4,7 @@
 <div class="container py-5">
     <div class="row d-flex justify-content-center align-items-center">
         <div class="col">
-            <div class="card shopping-cart" style="border-radius: 15px;">
+            <form class="card shopping-cart" style="border-radius: 15px;" action="/order" method="POST">
                 <div class="card-body text-black">
                     <div class="row">
                         <div class="col-lg-6 px-5 py-4">
@@ -23,7 +23,7 @@
                                     <div class="d-flex align-items-center">
                                         <p class="fw-bold mb-0 me-5 pe-3">{{ product["price"] }}$</p>
                                         <div class="def-number-input number-input safari_only">
-                                            <input class="quantity fw-bold text-black" min="0" name="quantity"
+                                            <input class="quantity fw-bold text-black" min="0" name="number-{{ product['id'] }}"
                                                    value="{{ product['number'] }}"
                                                    type="number">
                                         </div>
@@ -40,32 +40,32 @@
                         </div>
                         <div class="col-lg-6 px-5 py-4">
                             <h3 class="mb-5 pt-2 text-center fw-bold text-uppercase">Доставка</h3>
-                            <form class="mb-5">
+                            <div class="mb-5">
                                 <div data-mdb-input-init class="form-outline mb-5">
                                     <input type="text" id="typeName" class="form-control form-control-lg"
-                                           siez="17"
+                                           siez="17" name="address"
                                            placeholder="улица Пушкина, дом Колотушкина"/>
                                     <label class="form-label" for="typeName">Адрес</label>
                                 </div>
                                 <div data-mdb-input-init class="form-outline mb-5">
                                     <input type="text" id="typeName" class="form-control form-control-lg"
-                                           siez="17"
+                                           siez="17" name="phone"
                                            placeholder="+7 800 555 35 35"/>
                                     <label class="form-label" for="typeName">Номер телефона</label>
                                 </div>
                                 <p class="mb-5">Lorem ipsum dolor sit amet consectetur, adipisicing elit <a
                                         href="#!">obcaecati sapiente</a>.</p>
-                                <button type="button" data-mdb-button-init data-mdb-ripple-init
+                                <button type="submit" data-mdb-button-init data-mdb-ripple-init
                                         class="btn btn-primary btn-block btn-lg">Заказать
                                 </button>
                                 <h5 class="fw-bold mb-5" style="position: absolute; bottom: 0;">
                                     <a href="/"><i class="fas fa-angle-left me-2"></i>На главную</a>
                                 </h5>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>

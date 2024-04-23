@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if success %}
+<h1 class>Заказ оформлен</h1>
+<p>В ближайшее время с вами свяжется менеджер</p>
+<a href="/" class="btn btn-primary">Продолжить покупки</a>
+{% else %}
+<h1>Ошибка при оформлении заказа</h1>
+<a href="/cart" class="btn btn-danger">Попробуйте еще раз</a>
+{% endif %}
+{% endblock %}
