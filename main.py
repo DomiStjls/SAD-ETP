@@ -1,7 +1,7 @@
 from flask import *
 from flask_login import *
 
-from data import db_session
+from data import db_session, items_api
 from data.item import Item
 from data.loginform import LoginForm
 from data.order import Order
@@ -305,6 +305,7 @@ def admin():
 def main():
     # функция для вызова локального сервера и подключения к дб
     db_session.global_init("db/shop.db")
+    app.register_blueprint(items_api.blueprint)
     app.run(port=8080, host="127.0.0.1", debug=DEBUG)
 
 
