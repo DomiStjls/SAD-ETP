@@ -4,11 +4,13 @@ from flask_login import *
 from data import db_session
 from data.item import Item
 from data.loginform import LoginForm
-from data.signupform import SignUpForm
 from data.order import Order
+from data.signupform import SignUpForm
 from data.user import User
 
 DEBUG = True
+
+ADMINS = [1, 2]
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "yandex_lyceum_secret_key"
@@ -59,16 +61,17 @@ def signup():
     if form.validate_on_submit():
         try:
             db_sess = db_session.create_session()
-            user = User(name=form.name.data, surname=form.surname.data, age=form.age.data, email=form.email.data, cart="")
+            user = User(name=form.name.data, surname=form.surname.data, age=form.age.data, email=form.email.data,
+                        cart="")
             user.set_password(form.password.data)
             db_sess.add(user)
             db_sess.commit()
             login_user(user)
             return redirect('/')
         except Exception as e:
-            return render_template("signup.html", message="Что-то пошло не так :(", title="Регистрация", form=form)
+            return render_template("signup.html", message="Аккаунт с этой почтой уже есть", title="Регистрация",
+                                   form=form)
     return render_template("signup.html", title="Регистрация", form=form)
-
 
 
 @app.route("/logout")
@@ -279,6 +282,24 @@ def order():
         return render_template('order.html', success=True)
     except Exception as e:
         return render_template('order.html', success=False)
+
+
+@app.route('/admin')
+def admin():
+    if not current_user.is_authenticated:
+        return make_response(jsonify({"error": "Unathorized Access"}), 403)
+    if not current_user.id in ADMINS:
+        return make_response(jsonify({"error": "Forbidden"}), 403)
+    db_sess = db_session.create_session()
+    orders = []
+    for order in db_sess.query(Order).all():
+        o = []
+        for id, n in ([tuple(i.split(":")) for i in order.order.split(";")] if order.order else []):
+            q = db_sess.query(Item).filter(Item.id == id).first()
+            o.append({'id': id, 'n': n, 'name': q.name, 'category': q.category})
+        orders.append({'id': order.id, 'address': order.address, "phone": order.phone, 'name': 'n', 'surname': 's',
+                       'order': o})
+    return render_template('admin.html', orders=orders)
 
 
 def main():
