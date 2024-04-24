@@ -4,6 +4,7 @@ from flask_login import *
 from data import db_session
 from data.item import Item
 from data.loginform import LoginForm
+from data.signupform import SignUpForm
 from data.order import Order
 from data.user import User
 
@@ -50,6 +51,24 @@ def login():
         )
         # авторизация
     return render_template("login.html", title="Авторизация", form=form)
+
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    form = SignUpForm()
+    if form.validate_on_submit():
+        try:
+            db_sess = db_session.create_session()
+            user = User(name=form.name.data, surname=form.surname.data, age=form.age.data, email=form.email.data, cart="")
+            user.set_password(form.password.data)
+            db_sess.add(user)
+            db_sess.commit()
+            login_user(user)
+            return redirect('/')
+        except Exception as e:
+            return render_template("signup.html", message="Что-то пошло не так :(", title="Регистрация", form=form)
+    return render_template("signup.html", title="Регистрация", form=form)
+
 
 
 @app.route("/logout")
@@ -260,7 +279,6 @@ def order():
         return render_template('order.html', success=True)
     except Exception as e:
         return render_template('order.html', success=False)
-
 
 
 def main():
