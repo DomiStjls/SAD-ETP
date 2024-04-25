@@ -256,6 +256,11 @@ def addcart(id):
 
 @app.route('/order', methods=['POST'])
 def order():
+    """форма для оформления заказа
+
+    Returns:
+        сраница с формой для оформления заказа
+    """
     try:
         if not current_user.is_authenticated:
             return make_response(jsonify({"error": "Bad request"}), 400)
@@ -286,6 +291,11 @@ def order():
 
 @app.route('/admin')
 def admin():
+    """страница администратора
+
+    Returns:
+        сраница с заказами
+    """
     if not current_user.is_authenticated:
         return make_response(jsonify({"error": "Unathorized Access"}), 403)
     if not current_user.id in ADMINS:
@@ -303,7 +313,8 @@ def admin():
 
 
 def main():
-    # функция для вызова локального сервера и подключения к дб
+    """функция для запуска локального сервера и подключения к дб
+    """
     db_session.global_init("db/shop.db")
     app.register_blueprint(items_api.blueprint)
     app.run(port=8080, host="127.0.0.1", debug=DEBUG)
