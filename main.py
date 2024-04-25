@@ -8,7 +8,7 @@ from data.order import Order
 from data.signupform import SignUpForm
 from data.user import User
 
-DEBUG = True
+DEBUG = False
 
 ADMINS = [1, 2]
 
@@ -176,13 +176,13 @@ def search():
         maker = request.args.get("maker")
         # сначала берем из бд только записи в нужной нам категории
         # теперь уже отбираем нужные нам
-        print(maker.lower(), name.lower())
         data = [el for el in q if name.lower() in el.name.lower() and maker.lower() in el.maker.lower()]
         return render_template('search.html', data=data, total=len(data))
     except Exception as e:
         print(e)
         # в случае ошибки пользователь просто останется на главной странице
         return redirect('/')
+
 
 
 @app.route("/cart")
