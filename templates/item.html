@@ -15,7 +15,7 @@
             <h2 class="fw-bold">{{ product["name"] }}</h2>
             <p class="text-muted">{{ product["category"] }}</p>
             <p class="mb-4">Производитель: {{ product["maker"] }}</p>
-            <h3 class="my-4">${{ product["price"] }}</h3>
+            <h3 class="my-4">{{ product["price"] }}₽</h3>
             <p class="mb-4">{{ product["description"] }}</p>
             <form class="d-flex gap-3 mb-4" action="/addcart/{{ product['id'] }}" method="GET">
                 {% if current_user.is_authenticated %}
