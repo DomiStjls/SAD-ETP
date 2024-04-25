@@ -8,7 +8,7 @@ from data.order import Order
 from data.signupform import SignUpForm
 from data.user import User
 
-DEBUG = True
+DEBUG = False
 
 ADMINS = [1, 2]
 
