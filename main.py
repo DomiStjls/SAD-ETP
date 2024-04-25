@@ -1,7 +1,7 @@
 from flask import *
 from flask_login import *
 
-from data import db_session, items_api
+from data import db_session, items_api, orders_api
 from data.item import Item
 from data.loginform import LoginForm
 from data.order import Order
@@ -297,7 +297,7 @@ def admin():
         сраница с заказами
     """
     if not current_user.is_authenticated:
-        return make_response(jsonify({"error": "Unathorized Access"}), 403)
+        return make_response(jsonify({"error": "Unathorized Access"}), 401)
     if not current_user.id in ADMINS:
         return make_response(jsonify({"error": "Forbidden"}), 403)
     db_sess = db_session.create_session()
@@ -312,11 +312,27 @@ def admin():
     return render_template('admin.html', orders=orders)
 
 
+@app.route('/deleteorder/<order_id>')
+def deleteorder(order_id):
+    if not current_user.is_authenticated:
+        return make_response(jsonify({"error": "Unathorized Access"}), 401)
+    if not current_user.id in ADMINS:
+        return make_response(jsonify({"error": "Forbidden"}), 403)
+    db_sess = db_session.create_session()
+    item = db_sess.query(Order).get(order_id)
+    if not item:
+        return make_response(jsonify({'error': 'Bad request'}), 400)
+    db_sess.delete(item)
+    db_sess.commit()
+    return redirect('/admin')
+
+
 def main():
     """функция для запуска локального сервера и подключения к дб
     """
     db_session.global_init("db/shop.db")
     app.register_blueprint(items_api.blueprint)
+    app.register_blueprint(orders_api.blueprint)
     app.run(port=8080, host="127.0.0.1", debug=DEBUG)
 
 
