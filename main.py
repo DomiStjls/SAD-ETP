@@ -162,19 +162,21 @@ def search():
         session["url"] = "/search"
         # берем из формы параметры для фильтрации
         category = request.args.get("category")
+        db_sess = db_session.create_session()
         if category == 'Comp':
             category = 'Компьютерная техника'
+            q = db_sess.query(Item).filter(Item.category == category).all()
         elif category == 'Mobil':
             category = 'Мобильные и связь'
+            q = db_sess.query(Item).filter(Item.category == category).all()
         else:
             category = ''
+            q = db_sess.query(Item).all()
         name = request.args.get("name")
         maker = request.args.get("maker")
-        db_sess = db_session.create_session()
         # сначала берем из бд только записи в нужной нам категории
-        q = db_sess.query(Item).filter(Item.category == category).all()
         # теперь уже отбираем нужные нам
-        data = [el for el in q if name in el.name and maker in el.maker]
+        data = [el for el in q if name.lower() in el.name.lower() and maker.lower() in el.maker.lower()]
         return render_template('search.html', data=data, total=len(data))
     except Exception as e:
         print(e)
@@ -310,7 +312,8 @@ def admin():
             o.append({'id': id, 'n': n, 'name': q.name, 'category': q.category})
             s += q.price * int(n)
         client = db_sess.query(User).filter(User.id == order.client).first()
-        orders.append({'id': order.id, 'address': order.address, "phone": order.phone, 'name': client.name, 'surname': client.surname,
+        orders.append({'id': order.id, 'address': order.address, "phone": order.phone, 'name': client.name,
+                       'surname': client.surname,
                        'order': o, 'sum': s})
     return render_template('admin.html', orders=orders)
 
