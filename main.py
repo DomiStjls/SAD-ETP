@@ -304,11 +304,13 @@ def admin():
     orders = []
     for order in db_sess.query(Order).all():
         o = []
+        s = 0
         for id, n in ([tuple(i.split(":")) for i in order.order.split(";")] if order.order else []):
             q = db_sess.query(Item).filter(Item.id == id).first()
             o.append({'id': id, 'n': n, 'name': q.name, 'category': q.category})
+            s += q.price * int(n)
         orders.append({'id': order.id, 'address': order.address, "phone": order.phone, 'name': 'n', 'surname': 's',
-                       'order': o})
+                       'order': o, 'sum': s})
     return render_template('admin.html', orders=orders)
 
 
