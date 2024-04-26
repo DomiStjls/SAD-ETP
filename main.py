@@ -309,7 +309,8 @@ def admin():
             q = db_sess.query(Item).filter(Item.id == id).first()
             o.append({'id': id, 'n': n, 'name': q.name, 'category': q.category})
             s += q.price * int(n)
-        orders.append({'id': order.id, 'address': order.address, "phone": order.phone, 'name': 'n', 'surname': 's',
+        client = db_sess.query(User).filter(User.id == order.client).first()
+        orders.append({'id': order.id, 'address': order.address, "phone": order.phone, 'name': client.name, 'surname': client.surname,
                        'order': o, 'sum': s})
     return render_template('admin.html', orders=orders)
 
