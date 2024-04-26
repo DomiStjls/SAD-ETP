@@ -281,6 +281,8 @@ def order():
             id = int(key[7:])
             n = int(value)
             q += n
+            if n == 0:
+                continue
             s += f"{id}:{n};"
         if q == 0:
             raise ValueError
