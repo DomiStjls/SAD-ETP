@@ -159,7 +159,8 @@ def search():
         страницу с найденными товарами
     """
     try:
-        session["url"] = "/search"
+        session["url"] = '/search?category=' + request.args.get("category") + '&name=' + request.args.get(
+            "name") + '&maker=' + request.args.get("maker")
         # берем из формы параметры для фильтрации
         category = request.args.get("category")
         db_sess = db_session.create_session()
