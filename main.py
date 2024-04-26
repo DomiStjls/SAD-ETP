@@ -250,7 +250,7 @@ def addcart(id):
             s = s[1:]
         user.cart = s
         db_sess.commit()
-        return redirect(f"/item/{id}") if request.referrer.split('/')[-2] == 'item' else redirect("/")
+        return redirect(f"/item/{id}") if request.referrer.split('/')[-2] == 'item' else redirect(request.referrer)
     except Exception as e:
         print(e)
         return make_response(jsonify({"error": "Bad request"}), 400)
