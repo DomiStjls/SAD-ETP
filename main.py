@@ -327,6 +327,14 @@ def admin():
 
 @app.route('/deleteorder/<order_id>')
 def deleteorder(order_id):
+    """удаление заказа
+
+    Args:
+        order_id (integer): номер заказа, который мы хотим удалить
+
+    Returns:
+        перенаправляет на страницу администратора
+    """
     if not current_user.is_authenticated:
         return make_response(jsonify({"error": "Unathorized Access"}), 401)
     if not current_user.id in ADMINS:
