@@ -22,4 +22,6 @@ fi
 $VIRTUALENV/bin/pip install -r requirements.txt
 
 # Run your glorious application
+$VIRTUALENV/bin/python3 create_db_users.py
+$VIRTUALENV/bin/python3 create_db_items.py
 $VIRTUALENV/bin/python3 main.py
