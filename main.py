@@ -275,10 +275,14 @@ def order():
         del data['address']
         del data['phone']
         s = ""
+        q = 0
         for key, value in data.items():
             id = int(key[7:])
             n = int(value)
+            q += n
             s += f"{id}:{n};"
+        if q == 0:
+            raise ValueError
         s = s[:-1]
         order = Order(client=current_user.id, order=s, address=address, phone=phone)
         db_sess.add(order)
